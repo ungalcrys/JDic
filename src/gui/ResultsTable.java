@@ -79,6 +79,17 @@ public class ResultsTable extends JTable {
     }
 
     protected void processEditingStopped() {
+        String newValue = model.getValueAt(editingRow, editingColumn);
+        // show error if cell is empty
+        if (newValue.length() == 0) {
+            int row = editingRow;
+            int col = editingColumn;
+            String message = "The cell is not suposed to remain empty.";
+            String title = "Error";
+            JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+            setValueAt(selectedValue, row, col);
+            return;
+        }
         if (DEBUG)
             System.out.println("save: " + editingRow + "." + editingColumn);
         String[] values = EMPTY_COL_VALUES;
@@ -92,7 +103,6 @@ public class ResultsTable extends JTable {
             int unchangedColumn = Column.EN_INDEX - editingColumn;
             values[unchangedColumn] = model.getValueAt(editingRow, unchangedColumn);
         }
-        String newValue = model.getValueAt(editingRow, editingColumn);
         if (!values[editingColumn].equals(newValue)) {
             Column column = new Column(editingColumn, newValue);
             Database.update(values, column);
@@ -131,10 +141,10 @@ public class ResultsTable extends JTable {
 
     public void deleteSelected() {
         int row = getSelectedRow();
-        String text = "Delete current translation [" + model.getRo(row) + "]:[" + model.getEn(row) + "] ?";
+        String message = "Delete current translation [" + model.getRo(row) + "]:[" + model.getEn(row) + "] ?";
         String title = "Delete confirmation";
         String[] options = new String[] { "Yes", "No" };
-        int selectedOption = JOptionPane.showOptionDialog(this, text, title, JOptionPane.YES_NO_OPTION,
+        int selectedOption = JOptionPane.showOptionDialog(this, message, title, JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
         if (selectedOption == 0) {
             Database.delete(model.getValues(row));

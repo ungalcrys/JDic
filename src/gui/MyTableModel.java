@@ -15,6 +15,13 @@ public class MyTableModel extends DefaultTableModel {
         return value.toString();
     }
 
+    @Override
+    public void setValueAt(Object aValue, int row, int column) {
+        if (row == -1 || column == -1)
+            return;
+        super.setValueAt(aValue, row, column);
+    }
+
     public String getRo(int row) {
         return getValueAt(row, Column.RO_INDEX);
     }

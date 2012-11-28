@@ -2,19 +2,23 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JTextField;
 
-public class SearchField extends JTextField {
-    private static final String TEXT_ROMANA = "romana";
-    private static final String TEXT_ENGLISH = "english";
+import config.Configuration;
 
+public class SearchField extends JTextField {
     private static final long serialVersionUID = 6538760168724796092L;
+
     private String inactiveText;
 
-    private SearchField(final String inactiveText) {
+    public SearchField(final String inactiveText, ActionListener listener) {
         super(20);
         setMaximumSize(new Dimension(1000, getPreferredSize().height));
         setMinimumSize(new Dimension(200, getPreferredSize().height));
@@ -34,6 +38,23 @@ public class SearchField extends JTextField {
                     setActive(true);
             }
         });
+        addActionListener(listener);
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    setText(Configuration.EMPTY_STRING);
+                }
+            }
+        });
     }
 
     private void setActive(boolean active) {
@@ -46,14 +67,6 @@ public class SearchField extends JTextField {
         }
     }
 
-    public static SearchField createRomana() {
-        return new SearchField(TEXT_ROMANA);
-    }
-
-    public static SearchField createEnglish() {
-        return new SearchField(TEXT_ENGLISH);
-    }
-
     public boolean isEmpty() {
         String text = super.getText();
         return text.trim().length() == 0 || getForeground().equals(Color.LIGHT_GRAY) && text.equals(inactiveText);
@@ -62,7 +75,7 @@ public class SearchField extends JTextField {
     @Override
     public String getText() {
         if (isEmpty())
-            return new String();
+            return Configuration.EMPTY_STRING;
         else
             return super.getText();
     }

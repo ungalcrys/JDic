@@ -6,6 +6,7 @@ public class Configuration {
     private static final boolean DEBUG = false;
 
     public static final String APP_NAME = "JDic";
+    public static final String EMPTY_STRING = "";
 
     private static String sConfigDirPath;
 

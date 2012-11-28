@@ -25,6 +25,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import config.Configuration;
 
 import net.miginfocom.swing.MigLayout;
+import db.Column;
 import de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel;
 
 public class MainFrame extends JFrame {
@@ -34,14 +35,14 @@ public class MainFrame extends JFrame {
 
     private JTextField roField;
     private JTextField enField;
+    private ResultsTable resultsTable;
 
     public MainFrame() {
         super(Configuration.APP_NAME);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setIconImage(getImage("resources/book.png"));
 
-        // TODO add sorting column
-        final ResultsTable resultsTable = new ResultsTable(new MyTableModel());
+        resultsTable = new ResultsTable(new MyTableModel());
 
         Container pane = getContentPane();
         if (DEBUG) {
@@ -50,9 +51,10 @@ public class MainFrame extends JFrame {
             pane.setLayout(new MigLayout("fill"));
         }
 
-        roField = SearchField.createRomana();
+        SearchListener searchListener = new SearchListener();
+        roField = new SearchField(Column.LONG_NAMES[Column.RO_INDEX], searchListener);
+        enField = new SearchField(Column.LONG_NAMES[Column.EN_INDEX], searchListener);
         pane.add(roField, "grow,w 50%");
-        enField = SearchField.createEnglish();
         pane.add(enField, "grow,w 50%");
         JButton bTranslate = createButton("resources/search.png");
         JButton bAdd = createButton("resources/add.png");
@@ -75,7 +77,6 @@ public class MainFrame extends JFrame {
         pane.add(bTranslate);
         pane.add(bAdd);
         pane.add(bRemove, "wrap");
-        // pane.add(createButton("resources/help.png"), "wrap");
         resizeHeight(roField, bTranslate);
         resizeHeight(enField, bTranslate);
 
@@ -83,12 +84,7 @@ public class MainFrame extends JFrame {
         scrollPane.getVerticalScrollBar().setUnitIncrement(4);
         pane.add(scrollPane, "span,wrap,grow,h 100%");
 
-        bTranslate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                resultsTable.search(roField.getText(), enField.getText());
-            }
-        });
+        bTranslate.addActionListener(searchListener);
 
         setUndecorated(true);
         setDefaultLookAndFeelDecorated(true);
@@ -106,14 +102,12 @@ public class MainFrame extends JFrame {
                 translate.getPreferredSize().height));
     }
 
-    // TODO add enter/esc listener
     private JButton createButton(String imagePath) {
         JButton button = new JButton();
         Image img = getImage(imagePath);
         if (img != null)
             button.setIcon(new ImageIcon(img));
         button.setMargin(new Insets(0, 0, 0, 0));
-        // button.setMaximumSize(button.getPreferredSize());
         return button;
     }
 
@@ -144,5 +138,12 @@ public class MainFrame extends JFrame {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    class SearchListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            resultsTable.search(roField.getText(), enField.getText());
+        }
     }
 }

@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
+import config.Configuration;
+
 public class Database {
 
     private static final boolean DEBUG = true;
@@ -20,7 +22,7 @@ public class Database {
             e.printStackTrace();
         }
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:/home/ungalcrys/.JDictionary/dictionary.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:" + Configuration.getDbPath());
             connection.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,29 +76,19 @@ public class Database {
         }
     }
 
-    // TODO add en and ro _both_ values check
-    public static HashMap<String, String> getTranslations(String ro, String en) {
-        String where = new String();
-        if (ro.trim().length() > 0) {
-            where += getWhereKey("ro");
-        } else if (en.trim().length() > 0) {
-            where += getWhereKey("en");
-        }
+    // TODO add case in/sensitive
+    public static HashMap<String, String> getTranslations(String[] values) {
         String sql = "SELECT ro,en FROM translations";
+        String where = Column.createWhereSql(values);
         if (where.length() > 0)
             sql += " WHERE" + where;
-        // sql += " ORDER BY ro";
         HashMap<String, String> map = new HashMap<String, String>();
         Connection connection = connect();
         try {
             if (DEBUG)
                 System.out.println("sql: " + sql);
             PreparedStatement ps = connection.prepareStatement(sql);
-            if (ro.trim().length() > 0) {
-                ps.setString(1, getWhereValue(ro));
-            } else if (en.trim().length() > 0) {
-                ps.setString(1, getWhereValue(en));
-            }
+            Column.addSqlParams(ps, values);
             ResultSet rs = ps.executeQuery();
             while (rs.next())
                 map.put(rs.getString(1), rs.getString(2));
@@ -114,15 +106,6 @@ public class Database {
         return map;
     }
 
-    private static String getWhereKey(String column) {
-        return " " + column + " like ?";
-    }
-
-    private static String getWhereValue(String filter) {
-        return filter.replace('*', '%').replace("?", "_");
-    }
-
-    // TOCO check fppt.com
     public static void update(String[] whereColumns, Column col) {
         String sql = "UPDATE translations SET " + col.getName() + "=? WHERE ro=? and en=?";
         Connection connection = connect();

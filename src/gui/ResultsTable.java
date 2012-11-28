@@ -80,7 +80,7 @@ public class ResultsTable extends JTable {
 
     protected void processEditingStopped() {
         String newValue = model.getValueAt(editingRow, editingColumn);
-        // show error if cell is empty
+        // XXX show error if cell is empty
         if (newValue.length() == 0) {
             int row = editingRow;
             int col = editingColumn;
@@ -100,7 +100,7 @@ public class ResultsTable extends JTable {
                 System.out.println("insert");
         } else {
             values[editingColumn] = selectedValue;
-            int unchangedColumn = Column.EN_INDEX - editingColumn;
+            int unchangedColumn = Column.MAX_COL_INDEX - editingColumn;
             values[unchangedColumn] = model.getValueAt(editingRow, unchangedColumn);
         }
         if (!values[editingColumn].equals(newValue)) {
@@ -113,12 +113,12 @@ public class ResultsTable extends JTable {
     }
 
     protected void processEditingStarted() {
-        // could not use because editingRow and editingColumn are -1
+        // XXX do not use because editingRow and editingColumn are -1
     }
 
     public void search(String ro, String en) {
         model.getDataVector().removeAllElements();
-        HashMap<String, String> translations = Database.getTranslations(ro, en);
+        HashMap<String, String> translations = Database.getTranslations(new String[] { ro, en });
         Iterator<Entry<String, String>> iterator = translations.entrySet().iterator();
         while (iterator.hasNext()) {
             Entry<String, String> entry = iterator.next();

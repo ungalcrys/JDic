@@ -22,25 +22,33 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import config.Configuration;
+
 import net.miginfocom.swing.MigLayout;
 import de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel;
 
 public class MainFrame extends JFrame {
-
     private static final long serialVersionUID = 2269971701250845501L;
+
+    private static final boolean DEBUG = false;
+
     private JTextField roField;
     private JTextField enField;
 
     public MainFrame() {
-        super("Dictionar roman-englez");
+        super(Configuration.APP_NAME);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setIconImage(getImage("resources/book.png"));
 
+        // TODO add sorting column
         final ResultsTable resultsTable = new ResultsTable(new MyTableModel());
 
         Container pane = getContentPane();
-        // pane.setLayout(new MigLayout("debug,fill,novisualpadding"));
-        pane.setLayout(new MigLayout("fill"));
+        if (DEBUG) {
+            pane.setLayout(new MigLayout("debug,fill,novisualpadding"));
+        } else {
+            pane.setLayout(new MigLayout("fill"));
+        }
 
         roField = SearchField.createRomana();
         pane.add(roField, "grow,w 50%");
@@ -98,6 +106,7 @@ public class MainFrame extends JFrame {
                 translate.getPreferredSize().height));
     }
 
+    // TODO add enter/esc listener
     private JButton createButton(String imagePath) {
         JButton button = new JButton();
         Image img = getImage(imagePath);
@@ -120,6 +129,7 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
+        Configuration.initConfig();
         try {
             UIManager.setLookAndFeel(new SyntheticaAluOxideLookAndFeel());
         } catch (UnsupportedLookAndFeelException e) {

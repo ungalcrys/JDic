@@ -1,17 +1,14 @@
 package gui;
 
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.URL;
 import java.text.ParseException;
 
-import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,9 +19,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import config.Configuration;
-
 import net.miginfocom.swing.MigLayout;
+import resources.ResourceLoader;
+import config.Configuration;
 import db.Column;
 import de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel;
 
@@ -40,13 +37,13 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         super(Configuration.APP_NAME);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setIconImage(getImage("resources/book.png"));
+        setIconImage(ResourceLoader.getImage("book.png"));
 
         resultsTable = new ResultsTable(new MyTableModel());
 
         Container pane = getContentPane();
         if (DEBUG) {
-            pane.setLayout(new MigLayout("debug,fill,novisualpadding"));
+            pane.setLayout(new MigLayout("debug, fill, novisualpadding"));
         } else {
             pane.setLayout(new MigLayout("fill"));
         }
@@ -54,35 +51,45 @@ public class MainFrame extends JFrame {
         SearchListener searchListener = new SearchListener();
         roField = new SearchField(Column.LONG_NAMES[Column.RO_INDEX], searchListener);
         enField = new SearchField(Column.LONG_NAMES[Column.EN_INDEX], searchListener);
-        pane.add(roField, "grow,w 50%");
-        pane.add(enField, "grow,w 50%");
-        JButton bTranslate = createButton("resources/search.png");
-        JButton bAdd = createButton("resources/add.png");
+        pane.add(roField, "grow, w 50%, span 2");
+        pane.add(enField, "grow, w 50%");
+        JButton bTranslate = createButton("search.png");
+        JButton bAdd = createButton("add.png");
         bAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 resultsTable.addTranlation();
             }
         });
-        JButton bRemove = createButton("resources/remove.png");
+        JButton bRemove = createButton("remove.png");
         bRemove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 resultsTable.deleteSelected();
             }
         });
-        bAdd.setBackground(Color.GRAY);
-        bRemove.setBackground(Color.GRAY);
+        // bAdd.setBackground(Color.GRAY);
+        // bRemove.setBackground(Color.GRAY);
 
-        pane.add(bTranslate);
-        pane.add(bAdd);
-        pane.add(bRemove, "wrap");
+        pane.add(bTranslate, "wrap");
         resizeHeight(roField, bTranslate);
         resizeHeight(enField, bTranslate);
 
         JScrollPane scrollPane = new JScrollPane(resultsTable);
         scrollPane.getVerticalScrollBar().setUnitIncrement(4);
-        pane.add(scrollPane, "span,wrap,grow,h 100%");
+        pane.add(scrollPane, "span, wrap, grow, h 100%");
+
+        pane.add(bAdd);
+        pane.add(bRemove);
+        pane.add(Box.createHorizontalGlue(), "grow");
+        JButton bHelp = createButton("help.png");
+        bHelp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AboutDialog(MainFrame.this).setVisible(true);
+            }
+        });
+        pane.add(bHelp, "wrap");
 
         bTranslate.addActionListener(searchListener);
 
@@ -104,22 +111,11 @@ public class MainFrame extends JFrame {
 
     private JButton createButton(String imagePath) {
         JButton button = new JButton();
-        Image img = getImage(imagePath);
+        Image img =ResourceLoader.getImage(imagePath);
         if (img != null)
             button.setIcon(new ImageIcon(img));
         button.setMargin(new Insets(0, 0, 0, 0));
         return button;
-    }
-
-    public static Image getImage(String path) {
-        URL url = ClassLoader.getSystemResource(path);
-        Image img = null;
-        try {
-            img = ImageIO.read(url);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return img;
     }
 
     public static void main(String[] args) {

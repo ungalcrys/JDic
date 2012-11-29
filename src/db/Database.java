@@ -12,7 +12,7 @@ import config.Configuration;
 
 public class Database {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private static Connection connect() {
         Connection connection = null;

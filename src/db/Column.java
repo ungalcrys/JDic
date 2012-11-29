@@ -43,7 +43,6 @@ public class Column {
         return where;
     }
 
-    // TODO add help instructions in a frame
     public static void addSqlParams(PreparedStatement ps, String[] values) {
         int variableIndex = 1;
         try {

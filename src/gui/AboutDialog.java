@@ -23,12 +23,11 @@ import config.Configuration;
 
 public class AboutDialog extends JDialog {
 
-    private static final String HOMEPAGE = "www.ungalcrys.ro/jdic";
-
     private static final long serialVersionUID = -4147155878851661385L;
 
     private static final boolean DEBUG = false;
     private static final int YEAR = 2012;
+    private static final String HOMEPAGE = "www.ungalcrys.ro/jdic";
 
     public AboutDialog(JFrame owner) {
         super(owner, "About", ModalityType.APPLICATION_MODAL);

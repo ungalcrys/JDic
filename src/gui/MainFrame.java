@@ -82,6 +82,7 @@ public class MainFrame extends JFrame {
         pane.add(bAdd);
         pane.add(bRemove);
         pane.add(Box.createHorizontalGlue(), "grow");
+        // TODO add instructions
         JButton bHelp = createButton("help.png");
         bHelp.addActionListener(new ActionListener() {
             @Override
@@ -111,7 +112,7 @@ public class MainFrame extends JFrame {
 
     private JButton createButton(String imagePath) {
         JButton button = new JButton();
-        Image img =ResourceLoader.getImage(imagePath);
+        Image img = ResourceLoader.getImage(imagePath);
         if (img != null)
             button.setIcon(new ImageIcon(img));
         button.setMargin(new Insets(0, 0, 0, 0));

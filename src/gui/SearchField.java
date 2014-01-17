@@ -10,8 +10,6 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JTextField;
 
-import config.Configuration;
-
 public class SearchField extends JTextField {
     private static final long serialVersionUID = 6538760168724796092L;
 
@@ -50,7 +48,7 @@ public class SearchField extends JTextField {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    setText(Configuration.EMPTY_STRING);
+                    setText("");
                 }
             }
         });
@@ -74,7 +72,7 @@ public class SearchField extends JTextField {
     @Override
     public String getText() {
         if (isEmpty())
-            return Configuration.EMPTY_STRING;
+            return "";
         else
             return super.getText();
     }

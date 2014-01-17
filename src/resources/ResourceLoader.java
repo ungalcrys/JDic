@@ -24,6 +24,7 @@ public class ResourceLoader {
 
     public static File getFile(String path) {
         URL url = ResourceLoader.class.getResource(path);
+        System.out.println(url);
         File file = null;
         try {
             file = new File(url.toURI());

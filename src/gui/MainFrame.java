@@ -23,6 +23,7 @@ import net.miginfocom.swing.MigLayout;
 import resources.ResourceLoader;
 import config.Configuration;
 import db.Column;
+import db.DbSqlite;
 import de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel;
 
 public class MainFrame extends JFrame {
@@ -106,8 +107,8 @@ public class MainFrame extends JFrame {
     }
 
     private void resizeHeight(JTextField textField, JButton translate) {
-        textField.setPreferredSize(new Dimension(textField.getPreferredSize().width,
-                translate.getPreferredSize().height));
+        textField.setPreferredSize(new Dimension(textField.getPreferredSize().width, translate
+                .getPreferredSize().height));
     }
 
     private JButton createButton(String imagePath) {
@@ -120,7 +121,6 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        Configuration.initConfig();
         try {
             UIManager.setLookAndFeel(new SyntheticaAluOxideLookAndFeel());
         } catch (UnsupportedLookAndFeelException e) {
@@ -142,5 +142,11 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             resultsTable.search(roField.getText(), enField.getText());
         }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        DbSqlite.dispose();
     }
 }

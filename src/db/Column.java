@@ -3,8 +3,6 @@ package db;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import config.Configuration;
-
 public class Column {
     public static final String[] SHORT_NAMES = new String[] { "ro", "en" };
     public static final String[] LONG_NAMES = new String[] { "romana", "english" };
@@ -32,7 +30,7 @@ public class Column {
     }
 
     public static String createWhereSql(String[] values) {
-        String where = Configuration.EMPTY_STRING;
+        String where = new String();
         for (int i = 0; i <= MAX_COL_INDEX; i++) {
             if (values[i].trim().length() > 0) {
                 if (where.length() > 0)
@@ -46,7 +44,7 @@ public class Column {
     public static void addSqlParams(PreparedStatement ps, String[] values) {
         int variableIndex = 1;
         try {
-            for (int i = 0; i <= MAX_COL_INDEX; i++) {
+            for (int i = 0; i < values.length; i++) {
                 String value = values[i];
                 if (value.trim().length() > 0)
                     ps.setString(variableIndex++, value.replace('*', '%').replace("?", "_"));

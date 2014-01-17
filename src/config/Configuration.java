@@ -1,34 +1,28 @@
+
 package config;
 
 import java.io.File;
 
 public class Configuration {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     public static final String APP_NAME = "JDic";
-    public static final String EMPTY_STRING = "";
 
-    private static String sConfigDirPath;
-
-    public static void initConfig() {
-        createConfigDir();
-    }
-
-    private static void createConfigDir() {
-        String string = System.getProperty("user.home") + "/." + APP_NAME;
-        if (DEBUG)
-            System.out.println("config dir: " + string);
-        File file = new File(string);
-        if (!file.exists())
-            file.mkdirs();
-        sConfigDirPath = string;
-    }
+    private static String dbPath;
 
     public static String getDbPath() {
-        String string = sConfigDirPath + "/dictionary.db";
-        if (DEBUG) {
-            System.out.println("db path: " + string);
+        if (dbPath == null) {
+            String cofigDirPath = System.getProperty("user.home") + "/." + APP_NAME;
+            if (DEBUG)
+                System.out.println("config dir: " + cofigDirPath);
+            File file = new File(cofigDirPath);
+            if (!file.exists())
+                file.mkdirs();
+            dbPath = cofigDirPath + "/dictionary.db";
         }
-        return string;
+        if (DEBUG) {
+            System.out.println("db path: " + dbPath);
+        }
+        return dbPath;
     }
 }
